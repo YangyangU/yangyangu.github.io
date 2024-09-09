@@ -3,11 +3,9 @@ title: 快速上手 TS（基础类型篇）
 date: 2024-07-02 16:00:00
 tags: [TypeScript]
 categories: TypeScript
-index_img: /img/default.png
+index_img: /img/ts.png
 banner_img: /img/default.png
 ---
-
-![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f8ac0440860944a1a0b68ed64afd6e12~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1071&h=301&s=86189&e=png&b=1e3366)
 
 ## 前言
 

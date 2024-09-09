@@ -3,7 +3,7 @@ title: 只会Vue，快速上手React（React Router篇）
 date: 2024-06-12 16:00:00
 tags: [React]
 categories: React
-index_img: /img/default.png
+index_img: /img/react路由.jpg
 banner_img: /img/default.png
 ---
 

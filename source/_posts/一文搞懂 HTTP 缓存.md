@@ -3,7 +3,7 @@ title: 一文搞懂 HTTP 缓存
 date: 2024-04-22 16:00:00
 tags: [HTTP]
 categories: HTTP
-index_img: /img/default.png
+index_img: /img/http.png
 banner_img: /img/default.png
 ---
 

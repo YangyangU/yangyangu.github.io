@@ -3,7 +3,7 @@ title: 如何将提交说明（commit message）导出到指定文件？
 date: 2024-06-26 16:00:00
 tags: [Git]
 categories: Git
-index_img: /img/default.png
+index_img: /img/git.png
 banner_img: /img/default.png
 ---
 

@@ -1,9 +1,9 @@
 ---
 title: React 对比 Vue 如何做路由鉴权？
-date: 2024-06-9 16:00:00
+date: 2024-09-9 16:00:00
 tags: [React, Vue]
 categories: React
-index_img: /img/路由鉴权.png
+index_img: /img/路由鉴权.jpg
 banner_img: /img/default.png
 ---
 

@@ -3,11 +3,10 @@ title: 快速上手 TS（进阶类型篇）
 date: 2024-07-03 16:00:00
 tags: [TypeScript]
 categories: TypeScript
-index_img: /img/default.png
+index_img: /img/ts.png
 banner_img: /img/default.png
 ---
 
-![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c92154b7fc1549e98c18ac66b04f5410~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1082&h=453&s=606549&e=png&b=030303)
 
 ## 前言
 

@@ -3,7 +3,7 @@ title: 面试官 ：[] == ! [] 为什么返回 true ？
 date: 2023-12-04 16:00:00
 tags: [JavaScript]
 categories: JavaScript
-index_img: /img/default.png
+index_img: /img/面试.jpg
 banner_img: /img/default.png
 ---
 

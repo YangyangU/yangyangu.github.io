@@ -3,7 +3,7 @@ title: 面试官：从输入URL到页面渲染，有哪些地方可以优化
 date: 2024-04-27 16:00:00
 tags: [性能优化]
 categories: 性能优化
-index_img: /img/default.png
+index_img: /img/面试.jpg
 banner_img: /img/default.png
 ---
 

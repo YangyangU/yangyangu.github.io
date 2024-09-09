@@ -3,15 +3,13 @@ title: 只会Vue的我，上班第一天就要我写React+TS，是种什么样�
 date: 2024-06-07 16:00:00
 tags: [React]
 categories: React
-index_img: /img/default.png
+index_img: /img/react.png
 banner_img: /img/default.png
 ---
 
 ## 前言
 
 **只会 Vue 的我，上班第一天就要我写 React+TS，是种什么样的体验？**
-
-<p align=center><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7d272869417c43ac80f2bef1d675f178~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=225&h=225&s=63892&e=png&b=fefdfd" alt="image.png"  /></p>
 
 入职第一天，坐公交来到指定报道处，拿号排队准备办理入职，拿装备去工位，认识 Leader 跟 Mentor，自己看文档装环境，屁股都没坐热，mentor 就问我技术栈是什么，我说 Vue，他又问 React 用过吗？我开始有不祥的预感，他反手就甩了个链接，叫我装完环境看一下，装完 vscode、node、git，我直接 pull 下来，看了一下目录 pnpm 咱也没用过啊，怎么全是 ts ，用的 Vite？这个我熟，直接安装依赖 run dev！
 

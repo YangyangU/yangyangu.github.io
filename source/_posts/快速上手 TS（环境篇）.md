@@ -3,11 +3,9 @@ title: 快速上手 TS（环境篇）
 date: 2024-06-24 16:00:00
 tags: [TypeScript]
 categories: TypeScript
-index_img: /img/default.png
+index_img: /img/ts.png
 banner_img: /img/default.png
 ---
-
-<p align=center><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0228c29d46e542d98d153f52de8e1dee~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=304&h=166&s=5946&e=png&b=ffffff" alt="image.png" width="50%" /></p>
 
 ## 前言
 

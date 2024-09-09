@@ -3,7 +3,7 @@ title: 一文搞懂 Webpack 和 Vite
 date: 2024-04-25 16:00:00
 tags: [Webpack, Vite]
 categories: 工程化
-index_img: /img/default.png
+index_img: /img/vite.webp
 banner_img: /img/default.png
 ---
 
