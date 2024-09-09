@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="徐阳阳">
+  <meta name="keywords" content="阳阳的博客">
+  
+    <meta name="description" content="JS 数据类型的转换机制是是学习 JS 过程中的一大难点，一度成为初学者面临的巨大挑战，这一复杂性往往源于 JS 的灵活性和动态性，使得在不同的上下文中，同一个值可能被解释为不同的数据类型。  本文将针从底层出发，借助官方文档，深度剖析 JS 类型转换机制。 JS 中的数据类型首先我们回忆一下 JS 中的数据类型。 1234567891011121314151617181920212223&#x2F;&#x2F;基">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看了一天官方文档，终于搞懂了类型转换机制">
+<meta property="og:url" content="https://yangyangu.github.io/2023/12/03/%E7%9C%8B%E4%BA%86%E4%B8%80%E5%A4%A9%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%EF%BC%8C%E7%BB%88%E4%BA%8E%E6%90%9E%E6%87%82%E4%BA%86%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="YangyangU">
+<meta property="og:description" content="JS 数据类型的转换机制是是学习 JS 过程中的一大难点，一度成为初学者面临的巨大挑战，这一复杂性往往源于 JS 的灵活性和动态性，使得在不同的上下文中，同一个值可能被解释为不同的数据类型。  本文将针从底层出发，借助官方文档，深度剖析 JS 类型转换机制。 JS 中的数据类型首先我们回忆一下 JS 中的数据类型。 1234567891011121314151617181920212223&#x2F;&#x2F;基">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yangyangu.github.io/img/default.png">
+<meta property="article:published_time" content="2023-12-03T08:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-09T15:30:47.184Z">
+<meta property="article:author" content="徐阳阳">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yangyangu.github.io/img/default.png">
+  
+  
+  
+  <title>看了一天官方文档，终于搞懂了类型转换机制 - YangyangU</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yangyangu.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>YangyangU</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="看了一天官方文档，终于搞懂了类型转换机制"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-03 16:00" pubdate>
+          2023年12月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">看了一天官方文档，终于搞懂了类型转换机制</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>JS 数据类型的转换机制是是学习 JS 过程中的一大难点，一度成为初学者面临的巨大挑战，这一复杂性往往源于 JS 的灵活性和动态性，使得在不同的上下文中，同一个值可能被解释为不同的数据类型。</p>
+</blockquote>
+<p>本文将针从底层出发，借助官方文档，深度剖析 JS 类型转换机制。</p>
+<h2 id="JS-中的数据类型"><a href="#JS-中的数据类型" class="headerlink" title="JS 中的数据类型"></a>JS 中的数据类型</h2><p>首先我们回忆一下 JS 中的数据类型。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//基本数据类型</span><br><span class="hljs-keyword">let</span> num = <span class="hljs-number">123</span>; <span class="hljs-comment">//数字</span><br><span class="hljs-keyword">let</span> str = <span class="hljs-string">&quot;hello world&quot;</span>; <span class="hljs-comment">//字符串</span><br><span class="hljs-keyword">let</span> flag = <span class="hljs-literal">true</span>; <span class="hljs-comment">//布尔</span><br><span class="hljs-keyword">let</span> un = <span class="hljs-literal">undefined</span>; <span class="hljs-comment">//未定义</span><br><span class="hljs-keyword">let</span> nu = <span class="hljs-literal">null</span>; <span class="hljs-comment">//空值</span><br><span class="hljs-keyword">let</span> bigint = <span class="hljs-number">9007199254740991n</span>; <span class="hljs-comment">//大整数</span><br><span class="hljs-keyword">let</span> sy = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">&quot;symbol&quot;</span>); <span class="hljs-comment">//符号</span><br><br><span class="hljs-comment">//引用数据类型</span><br><span class="hljs-keyword">var</span> person = &#123;<br>  <span class="hljs-comment">//对象</span><br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;John&quot;</span>,<br>  <span class="hljs-attr">age</span>: <span class="hljs-number">30</span>,<br>  <span class="hljs-attr">isStudent</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-attr">hobbies</span>: [<span class="hljs-string">&quot;reading&quot;</span>, <span class="hljs-string">&quot;coding&quot;</span>],<br>&#125;;<br><span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]; <span class="hljs-comment">//数组</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-comment">//函数</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;你好！掘友&quot;</span>;<br>&#125;<br><span class="hljs-comment">//等等</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><p>JS 类型转换主要分为两种：<strong>隐式类型转换</strong>和<strong>显式类型转换</strong>。</p>
+<blockquote>
+<p><strong>1. 隐式类型转换</strong>：在隐式类型转换中，JS 引擎自动地将一种数据类型转换为另一种类型，通常发生在运算或比较的过程中。这种转换是隐式的，开发者不需要明确地进行操作，而是由 JS 引擎在必要的时候自动完成。</p>
+<p><strong>2. 显式类型转换</strong>：显式类型转换是由开发者明确指定的类型转换，通过调用相应的转换函数或使用一些特定的语法进行。这种转换是开发者有意识地进行的，用于确保数据在特定上下文中具有期望的类型。</p>
+</blockquote>
+<p>看到这你可能还是一头雾水，举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">var</span> a = <span class="hljs-number">12</span>;<br><span class="hljs-keyword">var</span> b = a + <span class="hljs-string">&quot;&quot;</span>; <span class="hljs-comment">//隐式类型转换</span><br><span class="hljs-keyword">var</span> c = <span class="hljs-title class_">String</span>(a); <span class="hljs-comment">//显式类型转换</span><br></code></pre></td></tr></table></figure>
+
+<p>在这里，隐式强制类型转换发生在变量 <code>a</code> 被赋值给变量 <code>b</code> 的过程中。通过将 <code>a</code> 与一个空字符串 <code>&quot;&quot;</code> 相加，JS 引擎会自动将 <code>a</code> 的值转换为字符串，然后与空字符串拼接在一起。这是一种常见的将数字转换为字符串的方式，是隐式的，因为你并没有明确指示进行类型转换。</p>
+<p>而显式强制类型转换通过调用 <code>String()</code> 函数来实现。你明确告诉 JS 引擎将变量 <code>a</code> 的值转换为字符串。这种方式更加明显，开发者有意识地进行了类型转换。</p>
+<p>总体而言，这两种方式都能将数字 <code>12</code> 转换为字符串，但发生的时机和方式略有不同。隐式转换是在某些操作中自动进行的，而显式转换是由开发者明确调用的。</p>
+<p>下面我们分别对这两种类型转换展开分析。</p>
+<h2 id="显示转换"><a href="#显示转换" class="headerlink" title="显示转换"></a>显示转换</h2><p>我们通常使用官方定义的 <code>Number()</code>、<code>String()</code>、<code>Boolean()</code> 等函数进行显示转换，这些函数提供了明确的方式将值转换为特定的数据类型。</p>
+<h3 id="原始值转其他类型"><a href="#原始值转其他类型" class="headerlink" title="原始值转其他类型"></a>原始值转其他类型</h3><h4 id="1-原始值转换成布尔值"><a href="#1-原始值转换成布尔值" class="headerlink" title="1. 原始值转换成布尔值"></a>1. 原始值转换成布尔值</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>()); <span class="hljs-comment">// false</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-number">1</span>)); <span class="hljs-comment">// true</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-number">0</span>)); <span class="hljs-comment">// false</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(-<span class="hljs-number">1</span>)); <span class="hljs-comment">// true</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-literal">undefined</span>)); <span class="hljs-comment">// false</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-literal">null</span>)); <span class="hljs-comment">// false</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-string">&quot;123&quot;</span>)); <span class="hljs-comment">// true</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-string">&quot;&quot;</span>)); <span class="hljs-comment">// false</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(<span class="hljs-string">&quot; &quot;</span>)); <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<p>见官方文档 9.2：<a target="_blank" rel="noopener" href="https://es5.github.io/#x9.2">Annotated ES5 9.2</a></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0af248dc983341429de2033138eaa78b~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=961&h=426&s=35352&e=png&b=fafafa" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>简而言之：</p>
+<blockquote>
+<ul>
+<li><code>false</code>、<code>0</code>、<code>&#39;&#39;</code>、<code>null</code>、<code>undefined</code>以及<code>NaN</code>转换为<code>false</code></li>
+<li>其他所有值转换为<code>true</code></li>
+</ul>
+</blockquote>
+<h4 id="2-原始值转换成数字"><a href="#2-原始值转换成数字" class="headerlink" title="2. 原始值转换成数字"></a>2. 原始值转换成数字</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-string">&quot;123&quot;</span>)); <span class="hljs-comment">//123</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-string">&quot;abc&quot;</span>)); <span class="hljs-comment">//NaN</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>()); <span class="hljs-comment">//0</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-literal">true</span>)); <span class="hljs-comment">//1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-literal">false</span>)); <span class="hljs-comment">//0</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-literal">null</span>)); <span class="hljs-comment">//0</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-literal">undefined</span>)); <span class="hljs-comment">//NaN</span><br></code></pre></td></tr></table></figure>
+
+<p>见官方文档 9.3：<a target="_blank" rel="noopener" href="https://es5.github.io/#x9.3">Annotated ES5 9.3</a></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9fbe5f577d424fd38e3f14ccb2d4e72c~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=945&h=518&s=35867&e=png&b=fbfbfb" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>大概的意思就是：</p>
+<blockquote>
+<ul>
+<li>如果是数字字符串，则转换为对应的数字。</li>
+<li>如果是非数字字符串或无法解析为数字的字符串，则转换为 <code>NaN</code>。</li>
+<li>布尔值 <code>true</code> 被转换为 <code>1</code>，<code>false</code> 被转换为 <code>0</code>。</li>
+<li><code>null</code> 被转换为 <code>0</code>。</li>
+<li><code>undefined</code> 被转换为 <code>NaN</code>。</li>
+</ul>
+</blockquote>
+<p>其中，对象转数字规则没有罗列，我们将在后文对 对象类型（Object）转数字类型进行着重分析。</p>
+<h4 id="3-原始值转换成字符串"><a href="#3-原始值转换成字符串" class="headerlink" title="3. 原始值转换成字符串"></a>3. 原始值转换成字符串</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">String</span>()); <span class="hljs-comment">//&#x27;&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">String</span>(<span class="hljs-number">123</span>)); <span class="hljs-comment">//&#x27;123&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">String</span>(<span class="hljs-title class_">NaN</span>)); <span class="hljs-comment">//&#x27;NaN&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">String</span>(<span class="hljs-literal">undefined</span>)); <span class="hljs-comment">//&#x27;undefined&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">String</span>(<span class="hljs-literal">null</span>)); <span class="hljs-comment">//&#x27;null&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">String</span>(<span class="hljs-literal">true</span>)); <span class="hljs-comment">//&#x27;true&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>空值或没有提供参数时，返回空字符串。</li>
+<li>数字转字符串：直接将数字转换为对应的字符串形式。</li>
+<li><code>NaN</code> 被转换为字符串 <code>&#39;NaN&#39;</code>。</li>
+<li>布尔值转字符串：<code>true</code> 转换为 <code>&quot;true&quot;</code>，<code>false</code> 转换为 <code>&quot;false&quot;</code>。</li>
+<li><code>null</code> 转换为字符串 <code>&quot;null&quot;</code>。</li>
+<li><code>undefined</code> 转换为 <code>&quot;undefined&quot;</code>。</li>
+</ul>
+<p>见官方文档 9.8：<a target="_blank" rel="noopener" href="https://es5.github.io/#x9.8">Annotated ES5 9.8</a></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bdbfe41b559f47029bdc769028fbee4a~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=920&h=447&s=32790&e=png&b=f9f9f9" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="4-原始值转对象"><a href="#4-原始值转对象" class="headerlink" title="4. 原始值转对象"></a>4. 原始值转对象</h4><p>原始数据类型可以通过其对应的包装对象来实现转换，例如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>(<span class="hljs-literal">true</span>)); <span class="hljs-comment">//[Boolean: true]</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>(<span class="hljs-number">123</span>)); <span class="hljs-comment">//[Number: 123]</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>(<span class="hljs-string">&quot;123&quot;</span>)); <span class="hljs-comment">//[String: &#x27;123&#x27;]</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>(<span class="hljs-literal">undefined</span>)); <span class="hljs-comment">//&#123;&#125;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>(<span class="hljs-literal">null</span>)); <span class="hljs-comment">//&#123;&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>见官方文档 9.9：<a target="_blank" rel="noopener" href="https://es5.github.io/#x9.9">Annotated ES5 9.9</a></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fdc53305afb2424cb0e7a0e841465472~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=996&h=548&s=49999&e=png&b=fbfbfb" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<blockquote>
+<ul>
+<li>布尔值、数字、字符串分别被转换为对应的 Boolean、Number、String 对象。</li>
+<li>对于 <code>undefined</code>，使用 <code>Object()</code> 转换为一个空对象 <code>&#123;&#125;</code>。</li>
+<li>对于 <code>null</code>，同样使用 <code>Object()</code> 转换为一个空对象 <code>&#123;&#125;</code>。</li>
+</ul>
+</blockquote>
+<p>以上就是原始值转换数据类型的官方解释，我们不用过多考虑，只需要无脑接受就好。</p>
+<p>当我们要用到的时候，查下这个表就行了。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3feba050341e49e6bba8861a728f1e09~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1080&h=1017&s=508208&e=png&b=f9f9f9" srcset="/img/loading.gif" lazyload alt="67fab372c578caf931014f18b425317.png"></p>
+<p>因为官方没有给<code>Null</code>和<code>Undefined</code>定义显示转换的方法，所以我们暂且不聊。</p>
+<p>然而以上这些内容都不是本文的重点，我们的重点是<strong>对象转换成原始值的过程</strong>，好戏才刚刚开始。</p>
+<h3 id="对象转原始值"><a href="#对象转原始值" class="headerlink" title="对象转原始值"></a>对象转原始值</h3><p>对象转<code>Null</code>与<code>Undefined</code>没有意义，所以我们只聊对象转字符串、数字和布尔值。</p>
+<h4 id="1-对象转数字"><a href="#1-对象转数字" class="headerlink" title="1. 对象转数字"></a>1. 对象转数字</h4><p>这时候我们再打开官方文档，回到之前铺垫的位置，如果转换的对象为对象类型的话，会进行红框中的操作。</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/10958fa5d33f4b7b8557883c5176f978~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=960&h=534&s=49735&e=png&b=fafafa" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>大概意思是，你传入一个值，经过<code>ToPrimitive</code>这样一个函数的调用并返回一个值，这个值会被转换成数字类型，我们可以通过文档（<a target="_blank" rel="noopener" href="https://es5.github.io/#x9.3">Annotated ES5 9.3</a>）进入到<code>ToPrimitive</code>这个函数内部。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/55bb6b70e0bb4147a00488b3060777ad~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=969&h=492&s=65356&e=png&b=faf9f9" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>看不懂，出国留学一下······</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff31030419fb4575b899dd3522e72015~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=914&h=917&s=99856&e=png&b=faf9f9" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>意思很明了，当你传入的是基本数据类型的时候，不会进行转换。唯独传入的是对象（Object）的时候才会有进行转换，它会调用对象的 [[DefaultValue]] 内部方法，于是我们跟随文档，跳到 8.12.8 。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b33ac07060264691b7c788826ed93ea1~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1321&h=877&s=127585&e=png&b=ffffff" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>翻译就不给大家看了，直接告诉大家它什么意思吧。</p>
+<p><code>ToPrimitive(obj, Number)</code> 是 ECMAScript 规范中描述的一种抽象操作，用于将给定对象 <code>obj</code> 转换为一个原始值，在进行数据转换的时候才会触发。这里我们目标是要将对象转换成数字，所以第二个参数是<code>Number</code>，字符串则是<code>String</code>。</p>
+<p>下面是 <code>ToPrimitive(obj, Number)</code> 的执行步骤：</p>
+<ol>
+<li><p><strong>如果 <code>obj</code> 是基本类型：</strong></p>
+<ul>
+<li>如果 <code>obj</code> 已经是基本类型（例如数字、字符串、布尔值等），那么直接返回 <code>obj</code>。</li>
+</ul>
+</li>
+<li><p><strong>否则，调用 <code>valueOf</code> 方法：</strong></p>
+<ul>
+<li>如果 <code>obj</code> 不是基本类型，即它是一个对象，首先会尝试调用 <code>valueOf</code> 方法。</li>
+<li>如果 <code>valueOf</code> 方法存在并返回一个原始值，那么返回这个原始值。</li>
+</ul>
+</li>
+<li><p><strong>否则，调用 <code>toString</code> 方法：</strong></p>
+<ul>
+<li>如果 <code>valueOf</code> 方法不存在，或者它返回的仍然是一个对象，那么接下来会调用 <code>toString</code> 方法。</li>
+<li>如果 <code>toString</code> 方法存在并返回一个原始值，那么返回这个原始值。</li>
+</ul>
+</li>
+<li><p><strong>否则，报错：</strong></p>
+<ul>
+<li>如果 <code>toString</code> 方法也不存在，或者它返回的仍然是一个对象，那么就无法将对象转换为原始值，此时会抛出一个错误。</li>
+</ul>
+</li>
+</ol>
+<p>简化一下：</p>
+<blockquote>
+<p>ToPrimitive(obj, Number) &#x3D;&#x3D;&gt; Number({})</p>
+<ol>
+<li>如果 obj 是基本类型，直接返回</li>
+<li>否则，调用 valueOf 方法，如果得到原始值，则返回</li>
+<li>否则，调用 toString 方法，如果得到原始值，则返回</li>
+<li>否则，报错</li>
+</ol>
+</blockquote>
+<p>这就相当于一个公式，当我们在将一个对象转换成数字类型的时候，直接套就行。</p>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">a = &#123;&#125;;<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(a)); <span class="hljs-comment">//NaN</span><br></code></pre></td></tr></table></figure>
+
+<p>开始套公式：</p>
+<ol>
+<li><p><strong>如果 <code>a</code> 是基本类型：</strong></p>
+<ul>
+<li><code>a</code> 是一个对象，不是基本类型。</li>
+</ul>
+</li>
+<li><p><strong>调用 <code>valueOf</code> 方法：</strong></p>
+<ul>
+<li>尝试调用 <code>valueOf</code> 方法，看是否可以获取到原始值。</li>
+<li>由于 <code>a</code> 是一个空对象 <code>&#123;&#125;</code>，而普通的对象（没有重写 <code>valueOf</code> 方法的情况下）的 <code>valueOf</code> 方法会返回对象本身，而不是一个原始值。</li>
+</ul>
+</li>
+<li><p><strong>调用 <code>toString</code> 方法：</strong></p>
+<ul>
+<li>由于 <code>valueOf</code> 方法没有返回原始值，接下来调用 <code>toString</code> 方法。</li>
+<li>对于普通的空对象 <code>&#123;&#125;</code>，<code>toString</code> 方法通常会返回 <code>&quot;[object Object]&quot;</code> 字符串。</li>
+</ul>
+</li>
+</ol>
+<p>调用<code>toString</code>方法的时候得到了原始值字符串<code>&quot;[object Object]&quot;</code>，于是<code>ToPrimitive</code>这个函数将其返回，最后就相当于 <code>Number(&quot;[object Object]&quot;)</code> 执行了这段代码。在 JS 引擎内部，<code>ToPrimitive</code>这个函数相当于进行了将 <code>Number(a)</code> 转化成了 <code>Number(&quot;[object Object]&quot;)</code> ，相当于将字符串转换成数字，所以最终打印结果为 <code>NaN</code>。</p>
+<h4 id="2-对象转字符串"><a href="#2-对象转字符串" class="headerlink" title="2. 对象转字符串"></a>2. 对象转字符串</h4><p>与对象转数字类似，唯一的区别就是转字符串时在<code>ToPrimitive</code>函数中是先调用 <code>toString</code> 方法，后调用 <code>typeOf</code> 方法。</p>
+<blockquote>
+<p>ToPrimitive(obj, String) &#x3D;&#x3D;&gt; String({})</p>
+<ol>
+<li>如果 obj 是基本类型，直接返回</li>
+<li>否则，调用 toString 方法，如果得到原始值，则返回</li>
+<li>否则，调用 valueOf 方法，如果得到原始值，则返回</li>
+<li>否则，报错</li>
+</ol>
+</blockquote>
+<p>与对象转数字用法一致，区别在于调用 <code>toString</code> 方法和 <code>valueOf</code> 方法的顺序，区分这一点就行了。</p>
+<h4 id="3-对象转布尔"><a href="#3-对象转布尔" class="headerlink" title="3. 对象转布尔"></a>3. 对象转布尔</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>(&#123;&#125;)); <span class="hljs-comment">// true</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Boolean</span>([])); <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<p>对象转换为布尔值时，结果总是 <code>true</code>。</p>
+<hr>
+<h2 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h2><p>隐式转换通常发生在一些运算符操作中，其中一些运算符会触发 JS 引擎自动进行类型转换以满足操作的要求。下面我们简单聊一下 <code>+</code> 这个运算符。</p>
+<h3 id="一元运算-a"><a href="#一元运算-a" class="headerlink" title="一元运算 + a"></a>一元运算 <code>+ a</code></h3><p>官方文档（<a target="_blank" rel="noopener" href="https://es5.github.io/#x11.4.6">Annotated ES5 11.4.6</a>）这样描述：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/29819bbe7e4740fcb2dfa3bfa015d5c5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=800&h=216&s=23157&e=png&b=ffffff" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>如果遇到 <code>+</code> 号，且它是当作一元运算符来使用，那么 <code>+</code> 号后面的数据一定要被强制转化为 <code>Number</code> 类型。</p>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(+<span class="hljs-string">&quot;1&quot;</span>); <span class="hljs-comment">//1</span><br></code></pre></td></tr></table></figure>
+
+<p>这个例子中， <code>+</code> 后面接的是数字字符串，则转换成对应数字，所以打印结果为<code>1</code>，没问题。</p>
+<p>那么 <code>+</code> 后面接的是对象类型呢，我们再举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(+&#123;&#125;); <span class="hljs-comment">//NaN</span><br></code></pre></td></tr></table></figure>
+
+<p>这个例子中， <code>+</code> 后面接的是一个空对象，那么对象怎么转换成<code>Number</code>呢，是不是要走<code>ToPrimitive</code>函数那一套哇，直接套公式就行了。</p>
+<p>我直接搬过来：</p>
+<blockquote>
+<p>ToPrimitive(obj, Number) &#x3D;&#x3D;&gt; Number({})</p>
+<ol>
+<li>如果 obj 是基本类型，直接返回</li>
+<li>否则，调用 valueOf 方法，如果得到原始值，则返回</li>
+<li>否则，调用 toString 方法，如果得到原始值，则返回</li>
+<li>否则，报错</li>
+</ol>
+</blockquote>
+<p>我们前面已经走过一遍流程了，这个<code>ToPrimitive</code>函数最后会返回一个<code>&quot;[object Object]&quot;</code>字符串，所以最终就相当于 <code>+</code> 后面接的是一个字符串，则转换成 <code>NaN</code> ，打印结果也为 <code>NaN</code>，没问题。</p>
+<p>我们也可以试着模拟一下整个过程：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// +&#123;&#125; 的过程模拟</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(+&#123;&#125;); <span class="hljs-comment">//0</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(&#123;&#125;.<span class="hljs-title function_">valueOf</span>()); <span class="hljs-comment">//&#123;&#125;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(&#123;&#125;.<span class="hljs-title function_">toString</span>()); <span class="hljs-comment">//&quot;[object Object]&quot;</span><br><span class="hljs-comment">//返回&quot;[object Object]&quot;字符串</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Number</span>(<span class="hljs-string">&quot;[object Object]&quot;</span>)); <span class="hljs-comment">//NaN</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="二元运算-a-b"><a href="#二元运算-a-b" class="headerlink" title="二元运算 a + b"></a>二元运算 <code>a + b</code></h3><p>官方文档（<a target="_blank" rel="noopener" href="https://es5.github.io/#x11.6.1">Annotated ES5 11.6.1</a>）这样描述：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0ba8415ad2d24e2e8d5d150360b2a7e8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1399&h=622&s=85403&e=png&b=ffffff" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>二元运算符 <code>+</code> 可以执行字符串连接，也可以执行数字加法。简而言之，将 <code>+</code> 左右两边的数据分别用<code>ToPrimitive</code>函数调用一遍，如果返回值中有一个是字符串，则进行字符串拼接；否则进行加法运算。</p>
+<p>即：</p>
+<blockquote>
+<p>lprim + rprim &#x3D;&#x3D; ToPrimitive(v1) + ToPrimitive(v2)</p>
+<ol>
+<li>当 + 两边有一个是字符串，则按字符串进行拼接</li>
+<li>否则，转到 number 进行计算</li>
+</ol>
+</blockquote>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">1</span> + <span class="hljs-string">&quot;1&quot;</span>); <span class="hljs-comment">//&#x27;11&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>我们分别让数字<code>1</code>和字符串<code>&#39;1&#39;</code>走一遍<code>ToPrimitive</code>，分别观察它们的返回值，发现<code>&#39;1&#39;</code>是数字字符串，在 <code>valueOf</code> 和 <code>toString</code> 方法后返回的还是<code>&#39;1&#39;</code>本身，即进行字符串拼接，得到打印结果<code>&#39;11&#39;</code>。</p>
+<p>当你理解透彻后很容易得到：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">1</span> + <span class="hljs-literal">null</span>); <span class="hljs-comment">//1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>([] + []); <span class="hljs-comment">//&#x27;&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>([] + &#123;&#125;); <span class="hljs-comment">//&#x27;[object Object]&#x27;</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(&#123;&#125; + &#123;&#125;); <span class="hljs-comment">//&#x27;[object Object][object Object]&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p><strong>当你读到这段话时，你已经跨过了 JS 类型转换这一座大山！</strong></p>
+<p>希望这篇文章能够为你提供帮助，如果你还有不懂之处，可以反复阅读，或者在评论区留言，学习是一个循序渐进，敢于试错的过程，我们顶峰相见！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/JavaScript/" class="print-no-link">#JavaScript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>看了一天官方文档，终于搞懂了类型转换机制</div>
+      <div>https://yangyangu.github.io/2023/12/03/看了一天官方文档，终于搞懂了类型转换机制/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>徐阳阳</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/04/%E9%9D%A2%E8%AF%95%E5%AE%98%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%94%E5%9B%9Etrue/" title="面试官 ：[] == ! [] 为什么返回 true ？">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">面试官 ：[] == ! [] 为什么返回 true ？</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

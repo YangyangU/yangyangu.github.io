@@ -1,0 +1,839 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="徐阳阳">
+  <meta name="keywords" content="阳阳的博客">
+  
+    <meta name="description" content="前言Webpack 和 Vite 都是前端工程化工具。Webpack 作为老大哥，在前端社区也算站稳了脚跟，它提供了许多配置和插件，让开发者定制化构建项目。随着 Vite 的出现，Webpack 在启动时间和热更新方面的缺陷就慢慢暴露，Vite 逐渐开始替代 Webpack。 Webpack使用步骤1. 初始化项目 1yarn init -y  2. 安装依赖 1yarn add webpack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文搞懂 Webpack 和 Vite">
+<meta property="og:url" content="https://yangyangu.github.io/2024/04/25/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82Webpack%E5%92%8CVite/index.html">
+<meta property="og:site_name" content="YangyangU">
+<meta property="og:description" content="前言Webpack 和 Vite 都是前端工程化工具。Webpack 作为老大哥，在前端社区也算站稳了脚跟，它提供了许多配置和插件，让开发者定制化构建项目。随着 Vite 的出现，Webpack 在启动时间和热更新方面的缺陷就慢慢暴露，Vite 逐渐开始替代 Webpack。 Webpack使用步骤1. 初始化项目 1yarn init -y  2. 安装依赖 1yarn add webpack">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yangyangu.github.io/img/vite.webp">
+<meta property="article:published_time" content="2024-04-25T08:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-09T15:29:10.736Z">
+<meta property="article:author" content="徐阳阳">
+<meta property="article:tag" content="Webpack">
+<meta property="article:tag" content="Vite">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yangyangu.github.io/img/vite.webp">
+  
+  
+  
+  <title>一文搞懂 Webpack 和 Vite - YangyangU</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yangyangu.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>YangyangU</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="一文搞懂 Webpack 和 Vite"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-25 16:00" pubdate>
+          2024年4月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">一文搞懂 Webpack 和 Vite</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2b07f91e750c4751ab4e412a06fb8c9f~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=771&h=318&s=214903&e=png&b=fec644" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Webpack 和 Vite 都是前端工程化工具。Webpack 作为老大哥，在前端社区也算站稳了脚跟，它提供了许多配置和插件，让开发者定制化构建项目。随着 Vite 的出现，Webpack 在启动时间和热更新方面的缺陷就慢慢暴露，Vite 逐渐开始替代 Webpack。</p>
+<h2 id="Webpack"><a href="#Webpack" class="headerlink" title="Webpack"></a>Webpack</h2><h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><p><strong>1. 初始化项目</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn init -y<br></code></pre></td></tr></table></figure>
+
+<p><strong>2. 安装依赖</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add webpack webpack-cli -D<br></code></pre></td></tr></table></figure>
+
+<p><strong>3. 在项目中创建 src 目录，编写代码</strong></p>
+<p><strong>4. 打包</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn webpack<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>Webpack 提供配置项和插件系统，允许我们在<code>webpack.config.js</code>文件中进行各种配置，从而帮助我们定制化构建项目。</p>
+<h4 id="mode"><a href="#mode" class="headerlink" title="mode"></a>mode</h4><p>设置打包的模式，<code>production</code>为生产模式，<code>development</code>为开发模式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">mode</span>: <span class="hljs-string">&quot;production&quot;</span>,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h4 id="entry"><a href="#entry" class="headerlink" title="entry"></a>entry</h4><p>指定打包入口文件，默认为<code>./src/index.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">entry</span>: <span class="hljs-string">&quot;./src/a.js&quot;</span>,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>指定打包入口文件为<code>./src/a.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">entry</span>: [<span class="hljs-string">&quot;./src/a.js&quot;</span>, <span class="hljs-string">&quot;./src/b.js&quot;</span>];<br></code></pre></td></tr></table></figure>
+
+<p>使用数组可以设置多个入口文件，但是最后始终打包成一个文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">entry</span>:&#123;<br>    <span class="hljs-attr">aa</span>:<span class="hljs-string">&#x27;./src/a.js&#x27;</span>,<br>    <span class="hljs-attr">bb</span>:<span class="hljs-string">&#x27;./src/b.js&#x27;</span><br>&#125;,<br></code></pre></td></tr></table></figure>
+
+<p>对象形式也可设置多个入口文件，但是会打包成多个文件。Webpack 会将<code>value</code>文件打包成<code>key.js</code>文件，比如上述例子会将<code>&#39;./src/a.js&#39;</code>文件打包成<code>aa.js</code>文件、<code>&#39;./src/b.js&#39;</code>件打包成<code>bb.js</code>文件。</p>
+<h4 id="output"><a href="#output" class="headerlink" title="output"></a>output</h4><p>对打包后的文件进行配置，默认打包文件地址为<code>./dist/main.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;path&quot;</span>);<br><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">output</span>: &#123;<br>    <span class="hljs-attr">filename</span>: <span class="hljs-string">&quot;bundle.js&quot;</span>, <span class="hljs-comment">//打包后的文件名</span><br>    <span class="hljs-attr">clean</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//每次打包前清除上次打包的文件</span><br>    <span class="hljs-attr">path</span>: path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">&quot;hello&quot;</span>), <span class="hljs-comment">//打包后的文件存放路径，必须要绝对路径</span><br>  &#125;,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>在<code>filename</code>中 Webpack 提供模版字符串的形式，可以自动生成唯一文件名：</p>
+<ul>
+<li><code>filename: &quot;[name].js&quot;</code> 打包多个文件时匹配对应的文件名,<code>[name]</code>与 entry 中的 key 对应。</li>
+<li><code>filename: &quot;[hash].js&quot;</code> 会随机生成哈希值，一般用于区分版本。</li>
+</ul>
+<p>等等，详情参考官方文档 <a target="_blank" rel="noopener" href="https://webpack.docschina.org/configuration/output/#template-strings">Output | template-strings</a></p>
+<h4 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h4><p>Webpack 默认情况下，只会处理 js 文件，如果我们希望它可以处理其他类型的文件，则要为其引入 loader</p>
+<p>以 css 为例，如果我们不进行任何操作</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//直接将css引入到js中</span><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;./style/index.css&quot;</span>;<br><br><span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">insertAdjacentHTML</span>(<span class="hljs-string">&quot;beforeend&quot;</span>, <span class="hljs-string">&quot;&lt;h1&gt;hello webpack&lt;/h1&gt;&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>直接打包</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b79dfc906c304c919c48740c96fca4f0~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=745&h=222&s=21476&e=png&b=1e1e1e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>报错了，Webpack 说读不懂。</p>
+<p>我们需要安装解析 css 文件的 loader：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add css-loader<br></code></pre></td></tr></table></figure>
+
+<p>配置 loader，<code>rules</code>是一个数组，允许我们配置多个 loader，<code>test</code>属性是一个正则表达式，用于匹配对应 loader 的文件，<code>use</code>属性则是匹配对应 loader。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">module</span>: &#123;<br>  <span class="hljs-attr">rules</span>: [<br>    &#123;<br>      <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>, <span class="hljs-comment">//匹配文件</span><br>      <span class="hljs-attr">use</span>: <span class="hljs-string">&quot;css-loader&quot;</span>,<br>    &#125;,<br>  ];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>配置完毕，成功打包，但是页面上并没有样式，但是打包文件中是有样式的啊，为什么就没有显示到页面上呢？</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f78ba8c1067840159bffdb596152f8f4~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=481&h=61&s=4104&e=png&b=1f1f1f" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>因为 loader 遵循职责单一原则，一个 loader 只做一件事情，如果你想在打包的文件中使用上 css，光有解析 loader 还不够，还需要安装另一个 loader：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add style-loader<br></code></pre></td></tr></table></figure>
+
+<p>然后配置<code>style-loader</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">module</span>: &#123;<br>    <span class="hljs-attr">rules</span>: [<br>      &#123;<br>        <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.css$/</span>, <span class="hljs-comment">//匹配文件</span><br>        <span class="hljs-attr">use</span>: [<span class="hljs-string">&quot;style-loader&quot;</span>, <span class="hljs-string">&quot;css-loader&quot;</span>], <span class="hljs-comment">//从后往前执行,有顺序要求</span><br>      &#125;,<br>    ],<br>  &#125;,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>这里需要注意 ⚠️，如果我们配置多个 loader，则用数组存放，存放的顺序遵循<strong>从右往左</strong>，先执行的放右边，否则会报错。这里先编译 css 再使用，所以顺序为<code>&#39;style-loader&#39;,&#39;css-loader&#39;</code>。</p>
+<h5 id="babel-loader"><a href="#babel-loader" class="headerlink" title="babel-loader"></a>babel-loader</h5><p>在编写 js 代码时，经常需要使用一些 js 中的新特性，而新特性在旧的浏览器中兼容性并不好。但是我们现在希望能够使用新的特性，我们可以采用折中的方案。依然使用新特性编写代码，但是代码编写完成时我们通过一些工具将新代码转换为旧代码。</p>
+<p><a target="_blank" rel="noopener" href="https://babel.nodejs.cn/">Babel</a> 就是这样一个工具，可以将新的 js 语法转换为旧的 js，以提高代码的兼容性。我们如果希望在 Webpack 支持 babel，则需要向 Webpack 中引入 babel-loader。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">onclick</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">alert</span>(<span class="hljs-string">&quot;hello webpack&quot;</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>这里我们使用一个箭头函数，在不做任何处理的情况下进行打包</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9a10db0edca94d77872bd99660885a22~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=582&h=61&s=6024&e=png&b=1f1f1f" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>打包后发现还是箭头函数。</p>
+<p>于是我们安装<code>babel-loader</code>以及一些配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add -D babel-loader @babel/core @babel/preset-env<br></code></pre></td></tr></table></figure>
+
+<p>配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">module</span>: &#123;<br>  <span class="hljs-attr">rules</span>: [<br>    &#123;<br>      <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.m?js$/</span>, <span class="hljs-comment">//以.mjs或js后缀的文件</span><br>      <span class="hljs-attr">exclude</span>: <span class="hljs-regexp">/(node_modules|bower_components)/</span>, <span class="hljs-comment">//排除node_modules中的文件</span><br>      <span class="hljs-attr">use</span>: &#123;<br>        <span class="hljs-attr">loader</span>: <span class="hljs-string">&quot;babel-loader&quot;</span>,<br>        <span class="hljs-attr">options</span>: &#123;<br>          <span class="hljs-attr">presets</span>: [<span class="hljs-string">&quot;@babel/preset-env&quot;</span>], <span class="hljs-comment">//根据目标浏览器或运行时环境自动选择合适的转换规则</span><br>        &#125;,<br>      &#125;,<br>    &#125;,<br>  ];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>再试试呢：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7b1a28dfbd914275971397476bf870c9~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=608&h=60&s=6398&e=png&b=1f1f1f" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>成功将箭头函数打包成普通函数。</p>
+<h6 id="配置兼容性"><a href="#配置兼容性" class="headerlink" title="配置兼容性"></a>配置兼容性</h6><p>我们可以在<code>package.json</code>文件中配置需要兼容的浏览器，详情见 <a target="_blank" rel="noopener" href="https://github.com/browserslist/browserslist">github</a></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">&quot;browserslist&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>  <span class="hljs-string">&quot;defaults&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">//默认</span><br>  <span class="hljs-string">&quot;ie &lt;= 11&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">//ie版本低于11</span><br>  <span class="hljs-string">&quot;last 2 versions&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">//至少存在两个版本</span><br>  <span class="hljs-string">&quot;&gt; 1%&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">//市场占有率大于1%</span><br>  <span class="hljs-string">&quot;iOS 7&quot;</span><span class="hljs-punctuation">,</span><br><span class="hljs-punctuation">]</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h4><p>plugin 的作用是 Webpack 扩展功能。loader 可以理解为转换器，用于处理模块之间的转换，plugin 则用于执行更广泛的任务，它可以访问 Webpack 的生命周期，在合适的时机执行插件的功能。</p>
+<p>举个例子 🌰：</p>
+<p>我想在打包目录生成 html 文件，用于访问打包的 js 文件，我们可以手动创建，但是我们不建议直接操作<code>dist</code>打包目录，我们可以通过 plugin 自动生成该文件。</p>
+<p>安装自动生成 html 文件的插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add -D html-webpack-plugin<br></code></pre></td></tr></table></figure>
+
+<p>配置 plugin</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">plugins</span>: [<br>  <span class="hljs-comment">//自动创建html文件</span><br>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">HTMLPlugin</span>(&#123;<br>    <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;Hello Webpack&quot;</span>, <span class="hljs-comment">//配置html文件的标题</span><br>    <span class="hljs-attr">template</span>: <span class="hljs-string">&quot;./src/index.html&quot;</span>, <span class="hljs-comment">//以哪个文件为模版创建</span><br>  &#125;),<br>];<br></code></pre></td></tr></table></figure>
+
+<p>当我们再次打包，就会自动生成包含对应配置的 html 文件。</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/87bfecda699449a5979753c9c4d6d3bd~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=200&h=90&s=3005&e=png&b=252526" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="服务器环境"><a href="#服务器环境" class="headerlink" title="服务器环境"></a>服务器环境</h3><p><code>webpack-cli</code>提供了许多命令帮助我们打包运行项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn webpack<br></code></pre></td></tr></table></figure>
+
+<p>每次修改源码都需要重新打包，太麻烦了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn webpack --watch<br></code></pre></td></tr></table></figure>
+
+<p>加上<code>--watch</code>后每次修改源码都会被监听到，并且重新打包。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6329df87bb8e4f91a2b344f2d239a561~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=544&h=73&s=11212&e=png&b=1e1e1e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>但是这个命令不能完美还原项目上线的场景，因为它访问的是文件目录，而不是服务器。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/041b8d5d3b9a4785a96f6810536c74fa~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=704&h=176&s=11852&e=png&b=fefefe" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>为此，我们可以安装一个 Webpack 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add -D webpack-dev-server<br></code></pre></td></tr></table></figure>
+
+<p>当我们运行以下命令，它能够将项目部署到一个开发服务器上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn webpack serve --open<br></code></pre></td></tr></table></figure>
+
+<p>当我们访问本地 8080 端口，就能够看到我们的项目。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a39e13a757994cbf8ebd21a9be5870a5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=421&h=149&s=8115&e=png&b=fdfdfd" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>⚠️ 需要注意的是：这个服务它只会将我们的项目打包并运行在这个服务器，但是本地看不到这个<code>dist</code>的，所以当我们项目调试完毕，还需要自己手动打包一下。</p>
+<h3 id="快捷命令"><a href="#快捷命令" class="headerlink" title="快捷命令"></a>快捷命令</h3><p>我们一般会将常用的命令配置一下，使用起来更方便：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;build&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;webpack&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;watch&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;webpack --watch&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;dev&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;webpack serve --open&quot;</span><br><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Vite"><a href="#Vite" class="headerlink" title="Vite"></a>Vite</h2><p>Webpack 是先打包再运行，而 Vite 开发时并不打包，而是直接采用 ES Module 运行项目，部署的时候再打包，开箱即用。</p>
+<h3 id="使用步骤-1"><a href="#使用步骤-1" class="headerlink" title="使用步骤"></a>使用步骤</h3><p><strong>1. 初始化项目</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn init -y<br></code></pre></td></tr></table></figure>
+
+<p><strong>2. 安装 Vite</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add -D vite<br></code></pre></td></tr></table></figure>
+
+<p><strong>3. Vite 的源码目录就是项目根目录，创建<code>index.html</code>文件，以 ES Module 的方式引入 js 文件</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;module&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./index.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>4. 在本地<code>5173</code>端口启动一个开发服务器，进行项目调试</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn vite<br></code></pre></td></tr></table></figure>
+
+<p><strong>5. 打包代码</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn vite build<br></code></pre></td></tr></table></figure>
+
+<h3 id="快速创建项目"><a href="#快速创建项目" class="headerlink" title="快速创建项目"></a>快速创建项目</h3><p>参考 <a target="_blank" rel="noopener" href="https://vitejs.cn/vite3-cn/guide/#scaffolding-your-first-vite-project">开始 | Vite 官方中文文档 (vitejs.cn)</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn create vite<br></code></pre></td></tr></table></figure>
+
+<p>然后按照提示操作一步步配置即可！</p>
+<p>如果你选的是原生 JS，你就会得到一个这样的完整项目路径：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dc878253b972445ca40eee285985308a~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=235&h=280&s=11761&e=png&b=252526" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="配置文件-1"><a href="#配置文件-1" class="headerlink" title="配置文件"></a>配置文件</h3><p>首先在根目录下创建<code>vite.config.js</code>文件，⚠️ 注意这里的抛出语法与 Webpack 不同，Webpack 使用 CommonJS 语法，而 Vite 使用的是 ES Module 语法。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//webpack</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//vite</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> = &#123;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里 Vite 还提供了一个可选配置项<code>defineConfig</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; defineConfig &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vite&quot;</span>;<span class="hljs-comment">//需不需要提示</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>(&#123;<br>    ...<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>它的作用是在我们写配置的时候会不会有提示。</p>
+<p>加了：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8b3281b4ea0411ab6db84977ed8da49~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=506&h=174&s=14896&e=png&b=1f1f1f" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>没加：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a649bc2692564ce4a4822396eb14e8f6~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=398&h=164&s=8082&e=png&b=1e1e1e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>对比不难发现区别。</p>
+<h4 id="Vite-需要配置-loader-吗？"><a href="#Vite-需要配置-loader-吗？" class="headerlink" title="Vite 需要配置 loader 吗？"></a>Vite 需要配置 loader 吗？</h4><p>试验一下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">h2</span> &#123;<br>  <span class="hljs-attribute">background-color</span>: pink;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;./index.css&quot;</span>;<br><span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">insertAdjacentHTML</span>(<span class="hljs-string">&quot;beforeend&quot;</span>, <span class="hljs-string">&quot;&lt;h2&gt;hello vite&lt;/h2&gt;&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>这里我们在 js 中引入 css 样式，然后<code>yarn vite</code> 运行一下</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0d4e62e6bcfd4ac3b2c04c7da18e9198~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=461&h=171&s=7138&e=png&b=fefefe" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>结果显而易见，vite 不用配置 loader 就能编译和使用 css。</p>
+<h4 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h4><p>Vite 可以使用插件进行扩展，这得益于 Rollup 优秀的插件接口设计和一部分 Vite 独有的额外选项。详情参见 <a target="_blank" rel="noopener" href="https://vitejs.cn/vite3-cn/guide/using-plugins.html">使用插件 | Vite 官方中文文档 (vitejs.cn)</a></p>
+<p>举个例子 🌰：</p>
+<p>要想为传统浏览器提供支持，类似于 Babel，需要引入官方插件<code>@vitejs/plugin-legacy</code>和压缩工具<code>terser</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yarn add -D @vitejs/plugin-legacy terser<br></code></pre></td></tr></table></figure>
+
+<p>然后配置插件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; defineConfig &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vite&quot;</span>; <span class="hljs-comment">//需不需要提示</span><br><span class="hljs-keyword">import</span> legacy <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@vitejs/plugin-legacy&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>(&#123;<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-title function_">legacy</span>(&#123;<br>      <span class="hljs-attr">targets</span>: [<span class="hljs-string">&quot;ie 11&quot;</span>], <span class="hljs-comment">//兼容IE 11</span><br>    &#125;),<br>  ],<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>我们来个箭头函数检验一下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>.<span class="hljs-property">onclick</span> = <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">alert</span>(<span class="hljs-string">&quot;hello vite&quot;</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><code>yarn vite build</code>一下</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9c237136b5f417f8d75a4a7a83d562c~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=349&h=165&s=10660&e=png&b=262627" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>我们可以看到 Vite 给我们生产了三个 js 文件和一个 html 文件，来分析一下：</p>
+<p><code>index.js</code>：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff6d50da1f7c431ca55d249120ebc223~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=468&h=52&s=4671&e=png&b=1e1e1e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>这个文件中的箭头函数并没有转为普通函数；</p>
+<p><code>index-legacy.js</code>：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3153971c059148c0852a3917640edde0~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=522&h=48&s=5193&e=png&b=1f1f1f" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>这个文件中的箭头函数成功转成了普通函数；</p>
+<p><code>polyfills-legacy.js</code>：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f289559ffa1c4faca4339661c488cbc8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=706&h=123&s=21850&e=png&b=1e1e1e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>这个文件的作用是用于向下兼容旧版浏览器，确保旧版浏览器能够读懂新特性。</p>
+<p><code>index.html</code>：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51f54a5761f14494a5c12830c47d7028~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1044&h=299&s=49070&e=png&b=1e1e1e" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>这个文件的意图就很明显了，如果浏览器支持 ESModule（即现代浏览器），则一般可以支持新语法，因此就可以直接引入新语法文件；但是如果浏览器不支持 ESModule，则可能是旧版本的浏览器，它们可能不支持新特性，这时候就需要引入兼容性代码来填补这些功能的缺失。在这种情况下，一般会引入 polyfills，以及旧版文件，来确保应用在旧版浏览器中的正常运行。</p>
+<p>vite 不像 webpack 只生成一个降级之后的文件，而是两个都生成，再根据浏览器的兼容性，动态地确定加载哪个版本的代码。对于现代浏览器来说，直接加载现代版本的代码可以获得更快的加载速度和更好的性能。而对于不支持 ES Module 的旧版浏览器，则加载降级版本的代码以确保兼容性。</p>
+<p>以上是对兼容性插件<code>legacy</code>的分析，更多插件可参见 <a target="_blank" rel="noopener" href="https://vitejs.cn/vite3-cn/plugins/">插件 | Vite 官方中文文档 (vitejs.cn)</a></p>
+<h3 id="快捷命令-1"><a href="#快捷命令-1" class="headerlink" title="快捷命令"></a>快捷命令</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;dev&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vite&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;build&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vite build&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;preview&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;vite preview&quot;</span><br><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h2><ol>
+<li><strong>构建方式：</strong> Webpack 通过构建整个项目的依赖图，将所有资源打包成一个或多个 bundle 文件，每次重启都需要打包。Vite 采用了即时编译的方式，在开发模式下通过浏览器原生支持的 ES Module 特性进行加载，不需要打包。</li>
+<li><strong>开发体验：</strong> Webpack 需要较多的配置，对复杂的项目来说，需要花费时间和精力来配置各种 loader 和 plugin。Vite 开箱即用，不需要复杂的配置即可快速启动项目，支持各种插件以满足特定需求。</li>
+<li><strong>热更新：</strong> Webpack 的热更新通常需要借助 webpack-dev-server 等插件，在一些情况下配置起来比较复杂。Vite 内置了基于浏览器原生模块热更新的开发服务器，无需额外配置即可实现快速的热更新。</li>
+</ol>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>已将学习代码上传至 <a target="_blank" rel="noopener" href="https://github.com/YangyangU/CodeSpace">github</a>，欢迎大家学习指正！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B7%A5%E7%A8%8B%E5%8C%96/" class="category-chain-item">工程化</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Webpack/" class="print-no-link">#Webpack</a>
+      
+        <a href="/tags/Vite/" class="print-no-link">#Vite</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>一文搞懂 Webpack 和 Vite</div>
+      <div>https://yangyangu.github.io/2024/04/25/一文搞懂Webpack和Vite/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>徐阳阳</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/27/%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%9A%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%8C%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9C%B0%E6%96%B9%E5%8F%AF%E4%BB%A5%E4%BC%98%E5%8C%96/" title="面试官：从输入URL到页面渲染，有哪些地方可以优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">面试官：从输入URL到页面渲染，有哪些地方可以优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/22/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%20HTTP%20%E7%BC%93%E5%AD%98/" title="一文搞懂 HTTP 缓存">
+                        <span class="hidden-mobile">一文搞懂 HTTP 缓存</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,806 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo.png">
+  <link rel="icon" href="/img/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="徐阳阳">
+  <meta name="keywords" content="阳阳的博客">
+  
+    <meta name="description" content="前言春招在继续，面试不停息！最近也是被问到了标题上这个问题，好家伙，一个问题问到了 URL 到页面渲染的过程和性能优化，如果不熟悉这个过程的话，回答起来确实挺费劲，这篇文章就将带大家来捋一捋，争取回答的时候不卡壳 ~ 输入 URL 到页面渲染过程1.URL 解析首先浏览器会判断你输入的是一个合法的URL  还是一个待搜索的关键词，如果是关键词，则会将关键词发送给默认的搜索引擎，然后返回页面；如果是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试官：从输入URL到页面渲染，有哪些地方可以优化">
+<meta property="og:url" content="https://yangyangu.github.io/2024/04/27/%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%9A%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93%EF%BC%8C%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9C%B0%E6%96%B9%E5%8F%AF%E4%BB%A5%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="YangyangU">
+<meta property="og:description" content="前言春招在继续，面试不停息！最近也是被问到了标题上这个问题，好家伙，一个问题问到了 URL 到页面渲染的过程和性能优化，如果不熟悉这个过程的话，回答起来确实挺费劲，这篇文章就将带大家来捋一捋，争取回答的时候不卡壳 ~ 输入 URL 到页面渲染过程1.URL 解析首先浏览器会判断你输入的是一个合法的URL  还是一个待搜索的关键词，如果是关键词，则会将关键词发送给默认的搜索引擎，然后返回页面；如果是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yangyangu.github.io/img/%E9%9D%A2%E8%AF%95.jpg">
+<meta property="article:published_time" content="2024-04-27T08:00:00.000Z">
+<meta property="article:modified_time" content="2024-09-09T15:30:35.432Z">
+<meta property="article:author" content="徐阳阳">
+<meta property="article:tag" content="性能优化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yangyangu.github.io/img/%E9%9D%A2%E8%AF%95.jpg">
+  
+  
+  
+  <title>面试官：从输入URL到页面渲染，有哪些地方可以优化 - YangyangU</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yangyangu.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>YangyangU</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="面试官：从输入URL到页面渲染，有哪些地方可以优化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-27 16:00" pubdate>
+          2024年4月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">面试官：从输入URL到页面渲染，有哪些地方可以优化</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>春招在继续，面试不停息！最近也是被问到了标题上这个问题，好家伙，一个问题问到了 URL 到页面渲染的过程和性能优化，如果不熟悉这个过程的话，回答起来确实挺费劲，这篇文章就将带大家来捋一捋，争取回答的时候不卡壳 ~</p>
+<h2 id="输入-URL-到页面渲染过程"><a href="#输入-URL-到页面渲染过程" class="headerlink" title="输入 URL 到页面渲染过程"></a>输入 URL 到页面渲染过程</h2><h3 id="1-URL-解析"><a href="#1-URL-解析" class="headerlink" title="1.URL 解析"></a>1.URL 解析</h3><p>首先浏览器会判断你输入的是一个合法的<code>URL</code>  还是一个待搜索的关键词，如果是关键词，则会将关键词发送给默认的搜索引擎，然后返回页面；如果是<code>URL</code>，则会对<code>URL</code>的结构进行解析。</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/56d345299ffd4a9da71e3bf11a6e3944~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=942&h=265&s=55934&e=png&b=fefefe" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="2-DNS-解析"><a href="#2-DNS-解析" class="headerlink" title="2.DNS 解析"></a>2.DNS 解析</h3><p>当浏览器解析出域名，它会向 DNS 服务器发送请求，获取相应域名对应的 IP 地址。</p>
+<ul>
+<li>首先搜索浏览器的 DNS 缓存，缓存中维护一张域名与 IP 地址的对应表</li>
+<li>若没有命中，则继续搜索操作系统的 DNS 缓存</li>
+<li>若仍然没有命中，则操作系统将域名发送至本地域名服务器，本地域名服务器采用递归查询自己的 DNS 缓存，查找成功则返回结果</li>
+<li>若本地域名服务器的 DNS 缓存没有命中，则本地域名服务器向上级域名服务器进行迭代查询<ul>
+<li>首先本地域名服务器向根域名服务器发起请求，根域名服务器返回顶级域名服务器的地址给本地服务器</li>
+<li>本地域名服务器拿到这个顶级域名服务器的地址后，就向其发起请求，获取权限域名服务器的地址</li>
+<li>本地域名服务器根据权限域名服务器的地址向其发起请求，最终得到该域名对应的 IP 地址</li>
+</ul>
+</li>
+<li>本地域名服务器将得到的 IP 地址返回给操作系统，同时自己将 IP 地址缓存起来</li>
+<li>操作系统将 IP 地址返回给浏览器，同时自己也将 IP 地址缓存起来</li>
+<li>至此，浏览器就得到了域名对应的 IP 地址，并将 IP 地址缓存起来</li>
+</ul>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fafd1dd33e6d4fe389872eb4ec215da0~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1013&h=730&s=78701&e=png&b=ffffff" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="3-TCP-三次握手建立连接"><a href="#3-TCP-三次握手建立连接" class="headerlink" title="3.TCP 三次握手建立连接"></a>3.TCP 三次握手建立连接</h3><p>浏览器向服务器发起 TCP 连接请求，与服务器建立连接。</p>
+<ol>
+<li><strong>客户端向服务器发送连接请求</strong>：客户端首先向服务器发送一个 SYN 报文段，指定客户端的初始序列号，并设置 SYN 标志位为 1，表示请求建立连接。</li>
+<li><strong>服务器响应确认连接请求</strong>：服务器接收到客户端的 SYN 报文段后，会向客户端发送一个 ACK 报文段作为确认，同时也发送一个 SYN 报文段。服务器在 SYN 报文段中指定服务器的初始序列号，并设置 SYN 和 ACK 标志位为 1，表示确认客户端的连接请求，并请求建立连接。</li>
+<li><strong>客户端确认连接</strong>：客户端收到服务器的 SYN 报文段后，会向服务器发送一个 ACK 报文段作为确认。客户端设置 ACK 标志位为 1，表示确认服务器的连接请求，建立连接。</li>
+</ol>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8355f9f227574d9ca85e5c76e9cfb872~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=864&h=439&s=265977&e=png&b=fdfdfd" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="4-发起-HTTP-请求"><a href="#4-发起-HTTP-请求" class="headerlink" title="4.发起 HTTP 请求"></a>4.发起 HTTP 请求</h3><p>当建立 TCP 连接之后，浏览器就可以发送  HTTP 请求到目标服务器，请求的内容包括：</p>
+<ul>
+<li><strong>请求行：</strong> 请求方法、请求的 URL、HTTP 协议的版本</li>
+<li><strong>请求头部：</strong> 包含了关于客户端、请求、所需资源等的信息（Host、User-Agent 等等）</li>
+<li><strong>请求体</strong>（仅在向服务器发送数据时才有）：包含了要发送给服务器的数据，如表单数据、JSON 数据等。</li>
+</ul>
+<h3 id="5-服务器响应"><a href="#5-服务器响应" class="headerlink" title="5.服务器响应"></a>5.服务器响应</h3><p>服务器接收到请求后，返回相应的资源数据，响应的内容包括：</p>
+<ul>
+<li><strong>状态行：</strong> 包含了 HTTP 协议的版本、状态码和状态消息。</li>
+<li><strong>响应头：</strong> 包含了关于响应、服务器、所返回资源等的信息（Content-Type、Content-Length 等等）。</li>
+<li><strong>响应体：</strong> 包含服务器返回给客户端的实际数据，如 HTML 页面、图片等。</li>
+</ul>
+<h3 id="6-浏览器解析渲染页面"><a href="#6-浏览器解析渲染页面" class="headerlink" title="6.浏览器解析渲染页面"></a>6.浏览器解析渲染页面</h3><h4 id="1-构建-DOM-树"><a href="#1-构建-DOM-树" class="headerlink" title="1.构建 DOM 树"></a>1.构建 DOM 树</h4><ol>
+<li><strong>词法分析</strong> ：<ul>
+<li>浏览器接收到 HTML 字符串后，会将其分解成一系列的标记（tokens）。</li>
+<li>标记包括开始标签、结束标签、属性、文本内容等。</li>
+</ul>
+</li>
+<li><strong>解析标记</strong> ：<ul>
+<li>浏览器根据词法分析得到的标记，开始解析这些标记并构建 DOM 节点。</li>
+<li>当解析到开始标签时，浏览器创建对应的元素节点，并将其加入 DOM 树中。</li>
+<li>当解析到属性时，浏览器将属性添加到对应的元素节点上。</li>
+<li>当解析到文本内容时，浏览器创建文本节点，并将其加入到 DOM 树中。</li>
+</ul>
+</li>
+<li><strong>构建 DOM 树</strong>：<ul>
+<li>在解析过程中，浏览器会根据标记的嵌套关系构建出完整的 DOM 树结构。</li>
+<li>根据 HTML 文档的层次结构，浏览器将创建的元素节点和文本节点按照其在文档中的位置进行组织，形成一棵树状结构。</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/608838c921b24d74a2bff2c3c2d8adaa~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=800&h=443&s=214016&e=png&b=fefdfd" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="2-构建-CSSOM-树"><a href="#2-构建-CSSOM-树" class="headerlink" title="2.构建 CSSOM 树"></a>2.构建 CSSOM 树</h4><ol>
+<li><strong>词法分析</strong> ：<ul>
+<li>浏览器接收到 CSS 字符串后，会将其分解成一系列的标记（tokens）。</li>
+<li>标记包括选择器、属性、属性值等。</li>
+</ul>
+</li>
+<li><strong>解析样式表</strong> ：<ul>
+<li>浏览器根据词法分析得到的标记，开始解析这些标记并构建 CSSOM 节点。</li>
+<li>当解析到选择器时，浏览器创建对应的规则节点，并将其加入 CSSOM 树中。</li>
+<li>当解析到属性和属性值时，浏览器将其添加到对应的规则节点上。</li>
+</ul>
+</li>
+<li><strong>计算优先级</strong> ：<ul>
+<li>在解析过程中，浏览器会确定样式的优先级。</li>
+</ul>
+</li>
+<li><strong>处理样式继承</strong> ：<ul>
+<li>浏览器会处理样式的继承关系，将父元素的样式属性应用到子元素上。</li>
+</ul>
+</li>
+<li><strong>解析样式表引用</strong> ：<ul>
+<li>如果样式表中包含了 <code>@import</code> 规则，浏览器会解析引入的外部样式表，并将其内容合并到当前的 CSSOM 树中。</li>
+</ul>
+</li>
+<li><strong>合并样式表（Merging Stylesheets）</strong> ：<ul>
+<li>如果页面中包含多个样式表，浏览器会将这些样式表合并成一个统一的 CSSOM 树。</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/395b713f42e54922bb733d37f6a0f574~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=582&h=299&s=123760&e=png&b=fbfafa" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="3-构建渲染树"><a href="#3-构建渲染树" class="headerlink" title="3.构建渲染树"></a>3.构建渲染树</h4><p>浏览器将 DOM 树和 CSSOM 树合并成渲染树（Render Tree）。</p>
+<ol>
+<li><strong>从 DOM 树和 CSSOM 树中选择可见元素</strong>：<ul>
+<li>首先，浏览器需要从 DOM 树和 CSSOM 树中选择出在页面中可见的元素。</li>
+<li>不可见的元素，如 <code>&lt;head&gt;</code>、<code>script</code> 标签内的内容等，不会包含在渲染树中。</li>
+</ul>
+</li>
+<li><strong>匹配样式规则</strong>：<ul>
+<li>对于渲染树中的每个可见元素，浏览器会根据其标签和属性等信息，匹配适用的 CSS 样式规则。</li>
+</ul>
+</li>
+<li><strong>计算最终样式</strong>：<ul>
+<li>当一个元素匹配到多个 CSS 样式规则时，浏览器会根据优先级和层叠规则计算出最终的样式值。</li>
+</ul>
+</li>
+<li><strong>生成渲染树</strong>：<ul>
+<li>当所有可见元素都被匹配样式并加入渲染树后，渲染树的构建过程就完成了。</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8798bcc009a4c0e8d1b41b25b5a6886~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1726&h=840&s=332657&e=png&b=fdfdfd" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="4-回流"><a href="#4-回流" class="headerlink" title="4.回流"></a>4.回流</h4><p>有了渲染树，再接着就要进入回流（Reflow），也称为重新布局（Layout），浏览器根据渲染树中每个节点的布局信息，计算各个节点在页面中的位置和大小。当页面中的元素尺寸、位置或可见性发生变化时，浏览器需要重新计算并更新页面的布局信息。</p>
+<h4 id="5-重绘"><a href="#5-重绘" class="headerlink" title="5.重绘"></a>5.重绘</h4><p>回流一定伴随着重绘（Repaint），重绘是指浏览器根据元素的样式信息重新绘制页面的过程，而不涉及布局的改变。浏览器根据布局信息，将页面内容绘制到屏幕上。当元素的样式属性（如颜色、背景色、文本等）发生变化时，会触发重绘操作。</p>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><h3 id="1-DNS-解析优化"><a href="#1-DNS-解析优化" class="headerlink" title="1.DNS 解析优化"></a>1.DNS 解析优化</h3><ul>
+<li>使用快速的 DNS 服务器，可以借助 CDN ，减少域名解析时间。</li>
+<li>减少不必要的域名解析，合并资源到尽可能少的域名。</li>
+</ul>
+<h3 id="2-建立-TCP-连接优化"><a href="#2-建立-TCP-连接优化" class="headerlink" title="2.建立 TCP 连接优化"></a>2.建立 TCP 连接优化</h3><ul>
+<li>使用 HTTP&#x2F;2 以上版本协议，充分利用多路复用功能，减少连接建立时间。</li>
+<li>减少不必要的 TCP 连接，通过合并或内联资源来减少连接建立次数。</li>
+</ul>
+<h3 id="3-发起-HTTP-请求优化"><a href="#3-发起-HTTP-请求优化" class="headerlink" title="3.发起 HTTP 请求优化"></a>3.发起 HTTP 请求优化</h3><ul>
+<li>减少 HTTP 请求次数，通过合并或内联资源来减少请求次数（比如图片资源可以考虑懒加载图片或使用精灵图）。</li>
+<li>使用资源预加载和预解析来预先加载页面所需资源。<code>&lt;link rel=&quot;preload&quot;&gt;</code> 或 <code>&lt;link rel=&quot;prefetch&quot;&gt;</code></li>
+</ul>
+<h3 id="4-服务器响应优化"><a href="#4-服务器响应优化" class="headerlink" title="4.服务器响应优化"></a>4.服务器响应优化</h3><ul>
+<li>使用 CDN 加速资源传输，提高服务器响应速度。</li>
+<li>启用服务器端缓存，缓存动态生成的内容或数据库查询结果，减少服务器压力和响应时间。</li>
+</ul>
+<h3 id="5-资源下载优化"><a href="#5-资源下载优化" class="headerlink" title="5.资源下载优化"></a>5.资源下载优化</h3><ul>
+<li>减小资源文件大小，如优化图片（使用 WebP 格式）、压缩 JavaScript 和 CSS。</li>
+<li>使用浏览器缓存（Cache-Control、Expires），减少对服务器的请求，尤其是静态资源。</li>
+<li>使用异步加载 <code>&lt;script async&gt;</code> 和 <code>&lt;script defer&gt;</code></li>
+</ul>
+<h3 id="6-HTML-解析优化"><a href="#6-HTML-解析优化" class="headerlink" title="6.HTML 解析优化"></a>6.HTML 解析优化</h3><ul>
+<li>编写语义化的 HTML，避免过多嵌套和冗余标签。</li>
+<li>减小 HTML 文件大小，去除不必要的空格和注释。</li>
+</ul>
+<h3 id="7-CSS-解析优化"><a href="#7-CSS-解析优化" class="headerlink" title="7.CSS 解析优化"></a>7.CSS 解析优化</h3><ul>
+<li>减少 CSS 文件大小，删除不必要的样式和选择器。</li>
+<li>避免使用昂贵的 CSS 选择器（尽量给每一个标签给定类名，不要嵌套），优化样式表性能。</li>
+</ul>
+<h3 id="8-构建渲染树优化"><a href="#8-构建渲染树优化" class="headerlink" title="8.构建渲染树优化"></a>8.构建渲染树优化</h3><ul>
+<li>减少不必要的 DOM 操作，优化 JS 执行性能。</li>
+<li>避免使用 JS 动态修改样式，尽量使用 CSS 实现动画效果。</li>
+</ul>
+<h3 id="9-回流优化"><a href="#9-回流优化" class="headerlink" title="9.回流优化"></a>9.回流优化</h3><ul>
+<li>使用新布局（Flexbox 或 Grid 布局），减少复杂的布局计算。</li>
+<li>避免频繁修改样式属性，尽量使用批量修改或者使用类名切换的方式。</li>
+</ul>
+<h3 id="10-重绘优化"><a href="#10-重绘优化" class="headerlink" title="10.重绘优化"></a>10.重绘优化</h3><ul>
+<li>使用 transform 和 opacity 属性来触发硬件加速，减少页面重绘次数。</li>
+<li>避免在页面加载过程中阻塞渲染，尽快将页面内容呈现给用户。</li>
+<li>如果需要操作 DOM，先让 DOM 脱离文档流，再修改，再带回文档流（或者使用 DocumentFragment），减少回流重绘。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904134307495943?searchId=20240426205357E60AB4CA7A393DAA106E#heading-26">「一道面试题」输入 URL 到渲染全面梳理中-页面渲染篇 - 掘金 (juejin.cn)</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903784229896199?searchId=20240426205107A43476DE1FB412A9CC53#heading-15">从 URL 输入到页面展现到底发生什么？ - 掘金 (juejin.cn)</a></li>
+<li><a target="_blank" rel="noopener" href="https://vue3js.cn/interview/http/after_url.html#%E4%BA%8C%E3%80%81%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90">面试官：说说地址栏输入 URL 敲下回车后发生了什么? | web 前端面试 - 面试官系列 (vue3js.cn)</a></li>
+</ul>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>已将学习代码上传至 <a target="_blank" rel="noopener" href="https://github.com/YangyangU/CodeSpace">github</a>，欢迎大家学习指正！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="category-chain-item">性能优化</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="print-no-link">#性能优化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>面试官：从输入URL到页面渲染，有哪些地方可以优化</div>
+      <div>https://yangyangu.github.io/2024/04/27/面试官：从输入URL到页面渲染，有哪些地方可以优化/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>徐阳阳</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/07/%E5%8F%AA%E4%BC%9A%E4%B8%8A%E7%8F%AD%E7%AC%AC%E4%B8%80%E5%A4%A9%E5%B0%B1%E8%A6%81%E6%88%91%E5%86%99ReactTS%E6%98%AF%E7%A7%8D/" title="只会Vue的我，上班第一天就要我写React+TS，是种什么样的体验？">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">只会Vue的我，上班第一天就要我写React+TS，是种什么样的体验？</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/25/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82Webpack%E5%92%8CVite/" title="一文搞懂 Webpack 和 Vite">
+                        <span class="hidden-mobile">一文搞懂 Webpack 和 Vite</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
